@@ -66,9 +66,9 @@ echo $data['foo']; // "bar"
 $collection->delete(); // true
 ```
 
-### Dependencies
+#### Dependencies
 - **symfony/dotenv** is used for database configuration.
 
 
-### Issues
+#### Issues
 Please create an issue for any bugs/security risks/etc
