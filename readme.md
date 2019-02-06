@@ -36,31 +36,31 @@ $data = [
   'number' => 1
 ];
 
-$collection->insert('key', $data);
-$collection->insert('key2', $data);
+$collection->insert('key', $data); // `FolderDb\FileFactory`
+$collection->insert('key2', $data); // `FolderDb\FileFactory`
 ```
 
 ### Count
 ```php
-echo $collection->count();
+echo $collection->count(); // 2
 ```
 
 ### Fetch data
 ```php
-$data = $collection->get('key'); // returns `FolderDb\Document` object
+$data = $collection->get('key'); // returns `FolderDb\Document`
 
 // Access your entry as an object
-echo $data->object->foo;
+echo $data->object->foo; // "bar"
 
 // Access your entry as an array
 $data = $data->object->toArray();
-echo $data['foo'];
+echo $data['foo']; // "bar"
 ```
 
 ### Delete "Collection"
 ⚠️ This method **deletes** the "Collection" **folder** and it's contents. ⚠️
 ```php
-$collection->delete();
+$collection->delete(); // true
 ```
 
 ### Dependencies
@@ -68,4 +68,4 @@ $collection->delete();
 
 
 ### Issues
-Please report any (security) issues
+Please create an issue for any bugs/security risks/etc
