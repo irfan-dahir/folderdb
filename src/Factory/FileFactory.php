@@ -45,7 +45,9 @@ class FileFactory
     /**
      * @param string $folder
      * @param string $name
+     * @param string|null $data
      * @return FileFactory
+     * @throws \Exception
      */
     public static function create(string $folder, string $name, ?string $data = null) : self
     {
@@ -54,7 +56,7 @@ class FileFactory
         $instance->data = $data ?? "";
 
         if (file_put_contents($instance->getPath(), $instance->getData()) === false) {
-            throw new \Exception('Failed to create file'); // todo replace with monolog
+            throw new \Exception('Failed to create file');
         }
 
         return $instance;
@@ -71,7 +73,7 @@ class FileFactory
         $instance = new self($folder, $name);
 
         if (!file_exists($instance->getPath()) || !is_readable($instance->getPath())) {
-            throw new \Exception('File does not exist or permission issues');
+            throw new \Exception('File does not exist or is not readable');
         }
 
         $instance->setData(file_get_contents($instance->getPath()));

@@ -26,7 +26,7 @@ class Document
     {
         $this->raw = $data ?? \json_encode([]);
 
-        $this->object = json_decode($this->raw);
+        $this->object = \json_decode($this->raw);
     }
 
     /**
@@ -34,6 +34,6 @@ class Document
      */
     public function toArray() : array
     {
-        return json_decode($this->raw, true);
+        return \json_decode($this->raw, true);
     }
 }

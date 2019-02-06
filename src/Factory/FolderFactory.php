@@ -38,7 +38,7 @@ class FolderFactory
         $instance = new self($name);
 
         if (!@mkdir($instance->getPath(), 0777, true) && !is_dir($instance->getPath())) {
-            throw new \Exception('Could not create db'); //replace with monolog
+            throw new \Exception('Failed to create folder');
         }
 
         return $instance;

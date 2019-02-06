@@ -23,7 +23,6 @@ class Folder
     public function __construct(FolderFactory $folder)
     {
         $this->folder = $folder;
-//        echo "Created Folder: {$this->folder->getName()}\n";
     }
 
     /**
@@ -39,7 +38,7 @@ class Folder
         try {
             $instance = FileFactory::create($this->folder->getName(), $name, $data);
         } catch (\Exception $e) {
-            throw new \Exception('Could not insert data');
+            throw new \Exception('Failed to insert data');
         }
 
         return $instance;
