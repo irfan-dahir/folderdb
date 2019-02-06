@@ -36,4 +36,9 @@ class Document
     {
         return \json_decode($this->raw, true);
     }
+
+    public static function fromArray(array $data) : self
+    {
+        return new self(\json_encode($data));
+    }
 }

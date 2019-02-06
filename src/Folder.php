@@ -27,16 +27,14 @@ class Folder
 
     /**
      * @param string $name
-     * @param array $data
+     * @param Document $data
      * @return FileFactory
      * @throws \Exception
      */
-    public function insert(string $name, array $data) : FileFactory
+    public function insert(string $name, Document $data) : FileFactory
     {
-        $data = \json_encode($data);
-
         try {
-            $instance = FileFactory::create($this->folder->getName(), $name, $data);
+            $instance = FileFactory::create($this->folder->getName(), $name, $data->raw);
         } catch (\Exception $e) {
             throw new \Exception('Failed to insert data');
         }

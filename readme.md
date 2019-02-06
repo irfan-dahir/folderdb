@@ -36,8 +36,11 @@ $data = [
   'number' => 1
 ];
 
-$collection->insert('key', $data); // `FolderDb\FileFactory`
-$collection->insert('key2', $data); // `FolderDb\FileFactory`
+// `new \FolderDb\Document()` takes string directly
+$document = \FolderDb\Document::fromArray($data);
+
+$collection->insert('key', $document); // `\FolderDb\FileFactory`
+$collection->insert('key2', $document); // `\FolderDb\FileFactory`
 ```
 
 ### Count
@@ -47,7 +50,7 @@ echo $collection->count(); // 2
 
 ### Fetch data
 ```php
-$data = $collection->get('key'); // returns `FolderDb\Document`
+$data = $collection->get('key'); // returns `\FolderDb\Document`
 
 // Access your entry as an object
 echo $data->object->foo; // "bar"
