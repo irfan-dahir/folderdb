@@ -1,0 +1,23 @@
+{
+    "name": "irfan/folderdb",
+    "description": "Flat-file JSON database",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Irfan",
+            "email": "irfan.dahir@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "FolderDb\\": [
+                "src"
+            ]
+        }
+    },
+    "require": {
+        "symfony/dotenv": "^4.2"
+    }
+}
