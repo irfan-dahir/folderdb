@@ -65,7 +65,7 @@ $client->users->insert(
 echo $client->users->count(); // 2
 ```
 
-### Fetch data
+### Get document
 ```php
 $user = $client->users->get('username'); // returns `\FolderDb\Document`
 
@@ -76,6 +76,16 @@ echo $user->email; // "john@example.com"
 // Access your entry as an array
 $userArray = $user->toArray();
 echo $userArray['email']; // "john@example.com"
+```
+
+### Get all documents in a folder
+```php
+$user = $client->users->getAll(); // returns array of `\FolderDb\Document`
+```
+
+### Check if document exists
+```php
+$client->users->exists('username'); // returns boolean
 ```
 
 ### Delete "Collection"
