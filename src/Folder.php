@@ -2,6 +2,7 @@
 
 namespace FolderDb;
 
+use FolderDb\Exception\FolderNotFoundException;
 use FolderDb\Exception\NotReadableException;
 use FolderDb\Factory\FileFactory;
 
@@ -12,10 +13,22 @@ use FolderDb\Factory\FileFactory;
 class Folder
 {
 
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var string
+     */
     private $path;
 
+    /**
+     * Folder constructor.
+     * @param string $dbPath
+     * @param string $name
+     * @throws NotReadableException
+     */
     public function __construct(string $dbPath, string $name)
     {
         $this->name = $name;
@@ -34,14 +47,19 @@ class Folder
      */
     public function insert(string $name, Document $data) : FileFactory
     {
-        return FileFactory::create($this->path, $name, $data->raw);
+        return FileFactory::create("{$this->path}/{$name}", $data->raw);
     }
 
     /**
      * @return int
+     * @throws FolderNotFoundException
      */
     public function count() : int
     {
+        if (!is_dir($this->path)) {
+            throw new FolderNotFoundException("{$this->path} does not exist");
+        }
+
         $count = 0;
 
         foreach (new \DirectoryIterator($this->path) as $file) {
@@ -53,13 +71,16 @@ class Folder
         return $count;
     }
 
+
     /**
      * @return bool
      */
     public function delete() : bool
     {
-        array_map('unlink', glob("{$this->path}/*.*"));
+        array_map('unlink', glob("{$this->path}/*"));
         rmdir($this->path);
+
+        return true;
     }
 
     /**
@@ -69,8 +90,21 @@ class Folder
      */
     public function get(string $name) : Document
     {
-        $data = FileFactory::get($this->path, $name);
+        return $this->_get("{$this->path}/{$name}");
+    }
 
-        return new Document($data->getData());
+    private function _get(string $path) : Document
+    {
+        return new Document(
+            (FileFactory::get($path))->getData()
+        );
+    }
+
+    public function getAll() : array
+    {
+        return array_map(
+            [$this, '_get'],
+            glob("{$this->path}/*")
+        );
     }
 }

@@ -11,17 +11,6 @@ use FolderDb\Exception\NotReadableException;
  */
 class FileFactory
 {
-
-    /**
-     * @var string
-     */
-    private $folder;
-
-    /**
-     * @var string
-     */
-    private $name;
-
     /**
      * @var string
      */
@@ -32,29 +21,25 @@ class FileFactory
      */
     private $data = "";
 
+
     /**
      * FileFactory constructor.
-     * @param string $folder
-     * @param string $name
+     * @param string $path
      */
-    private function __construct(string $folder, string $name)
+    private function __construct(string $path)
     {
-        $this->folder = $folder;
-        $this->name = $name;
-
-        $this->path = getenv('DB_PATH') . $this->folder . '/' . $this->name;
+        $this->path = $path;
     }
 
     /**
-     * @param string $folder
-     * @param string $name
+     * @param string $path
      * @param string|null $data
      * @return FileFactory
-     * @throws \Exception
+     * @throws NotReadableException
      */
-    public static function create(string $folder, string $name, ?string $data = null) : self
+    public static function create(string $path, ?string $data = null) : self
     {
-        $instance = new self($folder, $name);
+        $instance = new self($path);
 
         $instance->data = $data ?? "";
 
@@ -65,45 +50,28 @@ class FileFactory
         return $instance;
     }
 
+
     /**
-     * @param string $folder
-     * @param string $name
+     * @param string $path
      * @return FileFactory
-     * @throws \Exception
+     * @throws FileNotFoundException
+     * @throws NotReadableException
      */
-    public static function get(string $folder, string $name) : self
+    public static function get(string $path) : self
     {
-        $instance = new self($folder, $name);
+        $instance = new self($path);
 
         if (!file_exists($instance->getPath())) {
             throw new FileNotFoundException($instance->getPath() . ' not found');
-        } else {
-            if (!is_readable($instance->getPath())) {
-                throw new NotReadableException($instance->getPath() . ' is not readable');
-            }
+        }
+
+        if (!is_readable($instance->getPath())) {
+            throw new NotReadableException($instance->getPath() . ' is not readable');
         }
 
         $instance->setData(file_get_contents($instance->getPath()));
 
         return $instance;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return FileFactory
-     */
-    public function setName(string $name): FileFactory
-    {
-        $this->name = $name;
-        return $this;
     }
 
     /**
@@ -139,24 +107,6 @@ class FileFactory
     public function setData(string $data): FileFactory
     {
         $this->data = $data;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFolder(): string
-    {
-        return $this->folder;
-    }
-
-    /**
-     * @param string $folder
-     * @return FileFactory
-     */
-    public function setFolder(string $folder): FileFactory
-    {
-        $this->folder = $folder;
         return $this;
     }
 
