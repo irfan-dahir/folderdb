@@ -71,7 +71,6 @@ class Folder
         return $count;
     }
 
-
     /**
      * @return bool
      */
@@ -106,5 +105,14 @@ class Folder
             [$this, '_get'],
             glob("{$this->path}/*")
         );
+    }
+
+    public function exists(string $name) : bool
+    {
+        if (file_exists("{$this->path}/{$name}")) {
+            return true;
+        }
+
+        return false;
     }
 }
