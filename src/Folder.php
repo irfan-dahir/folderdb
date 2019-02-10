@@ -2,8 +2,8 @@
 
 namespace FolderDb;
 
+use FolderDb\Exception\NotReadableException;
 use FolderDb\Factory\FileFactory;
-use FolderDb\Factory\FolderFactory;
 
 /**
  * Class Folder
@@ -11,18 +11,19 @@ use FolderDb\Factory\FolderFactory;
  */
 class Folder
 {
-    /**
-     * @var FolderFactory
-     */
-    private $folder;
 
-    /**
-     * Folder constructor.
-     * @param FolderFactory $folder
-     */
-    public function __construct(FolderFactory $folder)
+    private $name;
+
+    private $path;
+
+    public function __construct(string $dbPath, string $name)
     {
-        $this->folder = $folder;
+        $this->name = $name;
+        $this->path = "{$dbPath}/{$name}";
+
+        if (!@mkdir($this->path, 0777, true) && !is_dir($this->path)) {
+            throw new NotReadableException('Failed to create folder');
+        }
     }
 
     /**
@@ -33,13 +34,7 @@ class Folder
      */
     public function insert(string $name, Document $data) : FileFactory
     {
-        try {
-            $instance = FileFactory::create($this->folder->getName(), $name, $data->raw);
-        } catch (\Exception $e) {
-            throw new \Exception('Failed to insert data');
-        }
-
-        return $instance;
+        return FileFactory::create($this->path, $name, $data->raw);
     }
 
     /**
@@ -49,7 +44,7 @@ class Folder
     {
         $count = 0;
 
-        foreach (new \DirectoryIterator($this->folder->getPath()) as $file) {
+        foreach (new \DirectoryIterator($this->path) as $file) {
             if (!$file->isDot() && $file->isFile()) {
                 $count++;
             }
@@ -63,8 +58,8 @@ class Folder
      */
     public function delete() : bool
     {
-        array_map('unlink', glob("{$this->folder->getPath()}/*.*"));
-        rmdir($this->folder->getPath());
+        array_map('unlink', glob("{$this->path}/*.*"));
+        rmdir($this->path);
     }
 
     /**
@@ -74,7 +69,7 @@ class Folder
      */
     public function get(string $name) : Document
     {
-        $data = FileFactory::get($this->folder->getName(), $name);
+        $data = FileFactory::get($this->path, $name);
 
         return new Document($data->getData());
     }

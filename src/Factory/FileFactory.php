@@ -2,6 +2,9 @@
 
 namespace FolderDb\Factory;
 
+use FolderDb\Exception\FileNotFoundException;
+use FolderDb\Exception\NotReadableException;
+
 /**
  * Class FileFactory
  * @package FolderDb\Factory
@@ -56,7 +59,7 @@ class FileFactory
         $instance->data = $data ?? "";
 
         if (file_put_contents($instance->getPath(), $instance->getData()) === false) {
-            throw new \Exception('Failed to create file');
+            throw new NotReadableException('Failed to create file');
         }
 
         return $instance;
@@ -72,8 +75,12 @@ class FileFactory
     {
         $instance = new self($folder, $name);
 
-        if (!file_exists($instance->getPath()) || !is_readable($instance->getPath())) {
-            throw new \Exception('File does not exist or is not readable');
+        if (!file_exists($instance->getPath())) {
+            throw new FileNotFoundException($instance->getPath() . ' not found');
+        } else {
+            if (!is_readable($instance->getPath())) {
+                throw new NotReadableException($instance->getPath() . ' is not readable');
+            }
         }
 
         $instance->setData(file_get_contents($instance->getPath()));

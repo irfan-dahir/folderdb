@@ -2,6 +2,8 @@
 
 namespace  FolderDb;
 
+use MOM\Schema;
+
 /**
  * Class Document
  * @package FolderDb
@@ -26,7 +28,18 @@ class Document
     {
         $this->raw = $data ?? \json_encode([]);
 
-        $this->object = \json_decode($this->raw);
+        $this->object = Schema::create(
+            \json_decode($this->raw, true)
+        );
+    }
+
+    public function __get($key)
+    {
+        if (!property_exists($this->object, $key)) {
+            return null;
+        }
+
+        return $this->object->{$key};
     }
 
     /**

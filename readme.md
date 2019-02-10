@@ -2,13 +2,32 @@
 [![Version](https://img.shields.io/packagist/v/irfan-dahir/folderdb.svg?style=flat)](https://packagist.org/packages/irfan-dahir/folderdb) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/irfan-dahir/folderdb.svg)](http://isitmaintained.com/project/irfan-dahir/folderdb "Average time to resolve an issue") [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/irfan-dahir/folderdb.svg)](http://isitmaintained.com/project/irfan-dahir/folderdb "Average time to resolve an issue") [![stable](https://img.shields.io/badge/PHP-^%207.1-blue.svg?style=flat)]() [![MIT License](https://img.shields.io/github/license/irfan-dahir/folderdb.svg?style=flat)](https://img.shields.io/github/license/irfan-dahir/folderdb.svg?style=flat)
 
 
-FolderDB is a flat-file JSON database. It creates directories which represents a "Collection". 
+FolderDB is a flat-file JSON database. Think MongoDB but Flat-file & JSON.
 
-It saves data into those directories as files with key/value pairs in JSON format. The "key" is the file name where the "value" is the JSON document.
+It saves data into directories as files with key/value pairs in JSON format. The "key" is the file name where the "value" is JSON data.
+
+FolderDB uses magic methods to automatically create or manage "collections"/directories.
+```php
+$client->users->insert(
+    'username',
+    \FolderDb\Document::fromArray([
+        'id' => '123',
+        'first_name' => 'John',
+        'last_name' => 'Doe,
+        'email' => 'john@example.com'
+    ])
+);
+
+$user = $client->users->get('username');
+
+echo $user->email; // "john@example.com"
+
+// To Array
+echo $user->toArray()['email'];
+```
 
 ## Installation
 1. `composer require irfan-dahir/folderdb`
-2. Copy `.env.example` to `.env` and configure the directory that will act as the database.
 
 ## Example
 
@@ -16,59 +35,59 @@ It saves data into those directories as files with key/value pairs in JSON forma
 ```php
 require_once __DIR__ .'/vendor/autoload.php';
 
-// Create a client and pass the path to the .env
-$client = new \FolderDb\Client('/var/www/folderdb/.env');
+// Create a client and pass the path to the database folder
+$client = new \FolderDb\Client('/path/to/database');
 ```
 
 
 ### Create a Folder
 ```php
-$collection = new \FolderDb\Folder(
-    \FolderDb\Factory\FolderFactory::create('name')
-);
+$client->users;
 ```
 
 ### Insert data
 ```php
 $data = [
-  'foo' => 'bar',
-  'baz' => true,
-  'number' => 1
+    'id' => '123',
+    'first_name' => 'John',
+    'last_name' => 'Doe,
+    'email' => 'john@example.com'
 ];
 
-// `new \FolderDb\Document()` takes string directly
-$document = \FolderDb\Document::fromArray($data);
-
-$collection->insert('key', $document); // `\FolderDb\FileFactory`
-$collection->insert('key2', $document); // `\FolderDb\FileFactory`
+// `new \FolderDb\Document()` takes JSON string directly, so we have to convert it to array
+$client->users->insert(
+    'username',
+    \FolderDb\Document::fromArray($data)
+);
 ```
 
 ### Count
 ```php
-echo $collection->count(); // 2
+echo $client->users->count(); // 2
 ```
 
 ### Fetch data
 ```php
-$data = $collection->get('key'); // returns `\FolderDb\Document`
+$user = $client->users->get('username'); // returns `\FolderDb\Document`
 
 // Access your entry as an object
-echo $data->object->foo; // "bar"
+echo $user->email; // "john@example.com"
+
 
 // Access your entry as an array
-$data = $data->object->toArray();
-echo $data['foo']; // "bar"
+$userArray = $user->toArray();
+echo $userArray['email']; // "john@example.com"
 ```
 
 ### Delete "Collection"
 ⚠️ This method **deletes** the "Collection" **folder** and it's contents. ⚠️
 ```php
-$collection->delete(); // true
+$user->delete(); // returns boolean
 ```
 
 #### Dependencies
-- **symfony/dotenv** is used for database configuration.
-
+- PHP 7.1+
+- [irfan-dahir/php-mom](https://github.com/irfan-dahir/php-mom)
 
 #### Issues
 Please create an issue for any bugs/security risks/etc

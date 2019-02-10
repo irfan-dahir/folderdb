@@ -2,14 +2,29 @@
 
 namespace FolderDb;
 
-use Symfony\Component\Dotenv\Dotenv;
+use FolderDb\Exception\FileNotFoundException;
+use FolderDb\Exception\FolderNotFoundException;
 
 class Client
 {
+    public $dbPath;
 
-    public function __construct($dotEnvPath = null)
+    public function __construct(string $dbPath)
     {
-        $dotenv = new Dotenv();
-        $dotenv->load($dotEnvPath ?? __DIR__.'/.env');
+        if (!is_dir($dbPath)) {
+            throw new FolderNotFoundException('Database path not found');
+        }
+
+        $this->dbPath = $dbPath;
     }
+
+    public function __get(string $folder)
+    {
+        if (!property_exists($this, $folder)) {
+            $this->{$folder} = new Folder($this->dbPath, $folder);
+        }
+
+        return $this->{$folder};
+    }
+
 }
