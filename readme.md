@@ -2,11 +2,15 @@
 [![Version](https://img.shields.io/packagist/v/irfan-dahir/folderdb.svg?style=flat)](https://packagist.org/packages/irfan-dahir/folderdb) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/irfan-dahir/folderdb.svg)](http://isitmaintained.com/project/irfan-dahir/folderdb "Average time to resolve an issue") [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/irfan-dahir/folderdb.svg)](http://isitmaintained.com/project/irfan-dahir/folderdb "Average time to resolve an issue") [![stable](https://img.shields.io/badge/PHP-^%207.1-blue.svg?style=flat)]() [![MIT License](https://img.shields.io/github/license/irfan-dahir/folderdb.svg?style=flat)](https://img.shields.io/github/license/irfan-dahir/folderdb.svg?style=flat)
 
 
-FolderDB is a flat-file JSON database. Think MongoDB but Flat-file & JSON.
+FolderDB is a flat-file JSON database with functionality similar to MongoDB.
 
 It saves data into directories as files with key/value pairs in JSON format. The "key" is the file name where the "value" is JSON data.
 
 FolderDB uses magic methods to automatically create or manage "collections"/directories.
+
+
+```composer require irfan-dahir/folderdb```
+
 ```php
 $client->users->insert(
     'username',
@@ -25,11 +29,6 @@ echo $user->email; // "john@example.com"
 // To Array
 echo $user->toArray()['email'];
 ```
-
-## Installation
-1. `composer require irfan-dahir/folderdb`
-
-## Example
 
 ### Getting Started
 ```php
