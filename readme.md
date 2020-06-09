@@ -17,7 +17,7 @@ $client->users->insert(
     \FolderDb\Document::fromArray([
         'id' => '123',
         'first_name' => 'John',
-        'last_name' => 'Doe,
+        'last_name' => 'Doe',
         'email' => 'john@example.com'
     ])
 );
